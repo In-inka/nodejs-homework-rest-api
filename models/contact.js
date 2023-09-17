@@ -32,10 +32,24 @@ const addSchemaCreate = Joi.object({
   favorite: Joi.boolean(),
 }).messages({ "any.required": "missing required {#label} field" });
 
+const addSchemaUpdate = Joi.object({
+  name: Joi.string(),
+  email: Joi.string().email(),
+  phone: Joi.string()
+    .pattern(/^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/)
+    .messages({ "string.pattern.base": `Phone number form (097)-000-0000` }),
+  favorite: Joi.boolean(),
+}).messages({ "any.required": "missing fields" });
+
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+}).messages({ "any.required": "missing field favorite" });
 
 const Contact = model("contact", contactSchema);
 
 module.exports = {
   Contact,
   addSchemaCreate,
+  addSchemaUpdate,
+  updateFavoriteSchema,
 };
