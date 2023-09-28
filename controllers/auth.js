@@ -67,9 +67,22 @@ const logout = async (req, res) => {
   res.status(204);
 };
 
+const getUpdate = async (req, res) => {
+  const { subscription } = req.body;
+
+  const user = await User.updateOne({ subscription: subscription });
+  if (!user) {
+    throw HttpError(401, "Not authorized");
+  }
+  res.json({
+    subscription,
+  });
+};
+
 module.exports = {
   register: ctrWrapper(register),
   login: ctrWrapper(login),
   getCurrent: ctrWrapper(getCurrent),
   logout: ctrWrapper(logout),
+  getUpdate: ctrWrapper(getUpdate),
 };

@@ -5,9 +5,13 @@ const { Contact } = require("../models/contact");
 
 const listContacts = async (req, res, next) => {
   const { _id: owner } = req.user;
-  const { page = 1, limit = 10 } = req.query;
+  const filter = { owner };
+  const { favorite = false, page = 1, limit = 10 } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner }, "-createdAt -updateAt", {
+  if (favorite) {
+    filter.favorite = true;
+  }
+  const result = await Contact.find(filter, "-createdAt -updateAt", {
     skip,
     limit,
   }).populate("owner", "email");
@@ -29,7 +33,7 @@ const getContactsById = async (req, res, next) => {
   if (!result) {
     throw HttpError(404, "Not found");
   }
-  res.json(result);
+  res.json(result.favorite);
   res.status(200);
 };
 
